@@ -7,6 +7,9 @@ import {dbConnection} from './db/connection'
 import morgan from 'morgan'
 import cors from 'cors'
 import userRoute from './routes/user.routes'
+import pageRoutes from './routes/page.routes'
+import sectionRoutes from './routes/section.routes'
+import subSectionRoutes from './routes/subSection.routes'
 import Joi from 'joi'
 Joi.objectId = require('joi-objectid')(Joi);
 dotenv.config({path:path.resolve(__dirname,'config/dev/config.env')})
@@ -22,6 +25,9 @@ console.log("port is ",port)
 
 // using routes 
 app.use('/profile/api/v1/user',userRoute)
+app.use('/profile/api/v1/page',pageRoutes)
+app.use('/profile/api/v1/section',sectionRoutes)
+app.use('/profile/api/v1/subSection',subSectionRoutes)
 .use('*',(req:Request,res:Response)=>{
     res.status(404).send({success:false,message_en:'Un Handled Route'})
 })

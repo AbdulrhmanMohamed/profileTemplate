@@ -1,14 +1,16 @@
 import Joi from 'joi';
 import mongoose , {Schema} from 'mongoose'
 
-interface ISection{
+export interface ISection{
     title:string,
     description:string,
     keywords:[string],
     keywordDescription:string,
-    sections:[mongoose.Schema.Types.ObjectId],
+    subSections:[mongoose.Schema.Types.ObjectId],
     image:string,
-    isActive:boolean
+    isActive:boolean,
+    _id:String,
+   
 }
 
 const sectionSchema=new Schema<ISection>({
@@ -27,7 +29,7 @@ const sectionSchema=new Schema<ISection>({
         required:true,
     }],
     keywordDescription:{type:String,required:true},
-    sections:[
+    subSections:[
         {type:mongoose.Schema.Types.ObjectId,required:true,ref:'SubSection'}
     ],
     image:{
@@ -38,7 +40,8 @@ const sectionSchema=new Schema<ISection>({
     isActive:{
         type:Boolean,
         default:false,
-    }
+    },
+    
 })
 
 const Section=mongoose.model<ISection>('Section',sectionSchema)
@@ -51,9 +54,10 @@ export const sectionValidation=async(section:ISection)=>{
         description:Joi.string().required(),
         keywords:Joi.array().items(Joi.string().required()).required,
         keywordDescription:Joi.string().required,
-        sections:Joi.array().items(Joi.objectId().required()),
+        subSections:Joi.array().items(Joi.objectId()),
         image:Joi.string(),
         isActive:Joi.boolean().required(),
+        
     })
     return schema.validate(section)
 }

@@ -1,16 +1,31 @@
 import {Request,Response} from 'express'
+import Page from '../../model/page.model'
+import Section, { ISection } from '../../model/section.model'
 import SubSection from '../../model/subSection.model'
 
 // DESC add subSection 
 // Route : POST /profile/api/v1/subSection
 export const addsubSection=async(req:Request,res:Response)=>{
     // cehck if subSection exist or not 
-        const subSection=await SubSection.findOne({title:req.body.title})
-        if(!subSection)
-            return res.status(400).send({success:false,message_en:'subSection Not Found'})
+        const subSection=await SubSection.findOne({...req.body})
+        if(subSection)
+            return res.status(400).send({success:false,message_en:'SubSection Already Exist'})
         const newSubSection=new SubSection({...req.body})
+        await newSubSection.save();
         res.status(200).send({success:true,messag_en:'subSection Fetched Successfully',subSection:newSubSection})
     
+}
+
+export const addSubSectionToSpecificSection=async(req:Request,res:Response)=>{
+    const id=req.params.id;
+    const subSection=new SubSection({...req.body})
+    await subSection.save();
+    const section=await Section.updateOne({_id:id},{$push:{subSections:id},new:true})
+    if(!section)
+        return res.status(400).send({success:false,message_en:'No Section found To add Your SubSection in '})
+    res.status(200).send({success:true,message_en:'SubSection ADDED Successfully to Speicific Section'})
+
+
 }
 
 //DESC get subSection by id
@@ -44,9 +59,14 @@ export const updatesubSection=async(req:Request,res:Response)=>{
 }
 
 export const deletesubSection=async(req:Request,res:Response)=>{
-    const id=req.params.id;
-    const subsection=await SubSection.findByIdAndDelete(id)
-    if(!subsection)
-        return res.status(400).send({success:false,message_en:'subSection Cant be updated because its not found'})
-    res.status(200).send({success:true , message_en:'subSection Deleted Successfully'})
+    
+   
+    //check where is the subSection inside the section array
+    const subSections=await Section.find({
+        subSections:{$elemMatch:{$eq:req.params.id}}
+    })
+    subSections.length && subSections.map(async(section:ISection)=>{
+       await  Section.updateMany({_id:section._id},{$pull:{subSections:req.params.id}})
+    })
+   res.status(200).send({success:true,message_en:'subSection Deleted Successfully'})
 }
