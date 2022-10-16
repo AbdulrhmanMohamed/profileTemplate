@@ -1,14 +1,14 @@
-import { Request,Response,NextFunction, Router } from "express";
-import {addPage,getPage,updatePage,deletePage, getAllThePages} from '../controller/page.controller'
+import { Request, Response, NextFunction, Router } from "express";
+import { addPage, getPage, updatePage, deletePage, getAllThePages } from '../controller/page/page.controller'
 
-const router:Router=Router();
+const router: Router = Router();
 
 router.route('/')
-.get(getAllThePages)
-.post(addPage)
+    .get(getAllThePages)
+    .post(addPage)
 router.route('/:id')
-.get(getPage)
-.put(updatePage)
-.delete(deletePage)
+    .get(getPage)
+    .put(updatePage)
+    .delete(deletePage)
 
 export default router;

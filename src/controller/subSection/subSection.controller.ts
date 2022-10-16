@@ -1,5 +1,5 @@
 import {Request,Response} from 'express'
-import SubSection from '../model/subSection.model'
+import SubSection from '../../model/subSection.model'
 
 // DESC add subSection 
 // Route : POST /profile/api/v1/subSection
