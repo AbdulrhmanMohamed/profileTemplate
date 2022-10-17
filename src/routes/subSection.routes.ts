@@ -1,15 +1,17 @@
 import { Router } from "express";
-import { 
+import {
     addsubSection,
     getsubSection,
     updatesubSection,
-    deletesubSection
- } from "../controller/subSection/subSection.controller";
+    deletesubSection,
+    relateSubSection,
+    updateSubSectionState
+} from "../controller/subSection/subSection.controller";
 
-const router:Router=Router();
+const router: Router = Router();
 
-router.route('/')
-    
-    .post( addsubSection)
+router.route('/').post(addsubSection)
+router.route('/updateSubSectionState/:id').put(updateSubSectionState)
+router.route('/:sectionId/:subSectionId').put(relateSubSection)
 
 export default router;

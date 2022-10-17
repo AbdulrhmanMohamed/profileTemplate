@@ -17,20 +17,21 @@ export const checkUserPrivelage = (type: string) =>
 
         }
         else if (type == 'changeRole') {
-            const haveAccess=user?.role==Roles.SUPER_ADMIN;
-            if(!haveAccess)
-            return res.status(400).send({message:'ONLy Super Admin Can Change user Role'})
+            const haveAccess = user?.role == Roles.SUPER_ADMIN;
+            if (!haveAccess)
+                return res.status(400).send({ message: 'ONLy Super Admin Can Change user Role' })
         }
         else if (type == 'product') {
             const haveAccess = user?.role == Roles.ADMIN;
             if (!haveAccess)
                 return res.status(400).send({ message: "ONly The Admin Can Access The Products" })
         }
-        else if (type=="page" || type=="section" || type=="subSection"){
-            const haveAccess=user?.role==Roles.ADMIN;
-            if(!haveAccess)
-                return res.status(400).send({message_en:'Only Super Admin Can Add Content To The Site'})
+        else if (type == "page" || type == "section" || type == "subSection") {
+            const haveAccess = user?.role == Roles.ADMIN;
+            if (!haveAccess)
+                return res.status(400).send({ message_en: 'Only  Admin Can Add Content To The Site' })
         }
+
         next()
 
     }

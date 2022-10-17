@@ -8,7 +8,7 @@ import { AuthenticatedRequest } from "../../middlewares/auth";
 // Route : POST /profile/api/v1/Section
 export const addSection = async (req: Request, res: Response) => {
   // cehck if Section exist or not
-  const section = await Section.findOne({ ...req.body});
+  const section = await Section.findOne({ ...req.body });
   if (!section)
     return res
       .status(400)
@@ -21,18 +21,28 @@ export const addSection = async (req: Request, res: Response) => {
   });
 };
 
-export const addSectionToSpecificPage=async(req:AuthenticatedRequest,res:Response)=>{
+export const addSectionToSpecificPage = async (req: AuthenticatedRequest, res: Response) => {
   console.log('calling specific')
   console.log(req.params.pageId)
-  const {pageId}=req.params;
-  const page=await Page.findById(pageId)
+  const { pageId } = req.params;
+  const page = await Page.findById(pageId)
   // create the section inside the page 
-  const section=new Section({...req.body})
+  const section = new Section({ ...req.body })
   await section.save();
- await page?.update({$push:{sections:section._id}})
- if(!page)
-  return res.status(400).send({success:false,message_en:'Page Not Found'})
-res.status(200).send({success:true,message_en:'Section Add To The page Successfully'})
+  await page?.update({ $push: { sections: section._id } })
+  if (!page)
+    return res.status(400).send({ success: false, message_en: 'Page Not Found' })
+  res.status(200).send({ success: true, message_en: 'Section Add To The page Successfully' })
+}
+
+export const relateSection = async (req: AuthenticatedRequest, res: Response) => {
+  const { pageId, sectionId } = req.params;
+  const page = await Page.updateOne({ _id: pageId }, {
+    $push: { sections: sectionId }
+  })
+  if (!page)
+    return res.status(400).send({ success: false, message_en: 'Cant Relate To the page since its not found' })
+  res.status(200).send({ success: true, message_en: 'section Refrenced to the desired Page successfully' })
 }
 
 //DESC get Section by id
@@ -87,6 +97,15 @@ export const updateSection = async (req: Request, res: Response) => {
   });
 };
 
+export const updateSectionState = async (req: AuthenticatedRequest, res: Response) => {
+  const section = await Section.updateOne({ _id: req.params.id }, {
+    $set: { isActive: true }
+  })
+  if (!section) {
+    return res.status(400).send({ success: false, message_en: 'Cant update section State , Section not Found' })
+  }
+  res.status(200).send({ success: true, message_en: 'updates Section State Successfully' })
+}
 export const deleteSection = async (req: Request, res: Response) => {
   const pages: Array<IPage> = await Page.find({
     sections: {
@@ -103,6 +122,6 @@ export const deleteSection = async (req: Request, res: Response) => {
       }
     );
   });
-//   await Section.deleteOne({_id:})
+  //   await Section.deleteOne({_id:})
   res.status(200).send(pages);
 };

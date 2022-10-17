@@ -38,11 +38,11 @@ export const updateUser = async (req: AuthenticatedRequest, res: Response) => {
 
 }
 
-export const changeRole=async(req:AuthenticatedRequest,res:Response)=>{
-    const id=req.params.id;
-    const user=await User.updateOne({_id:id},{$set:{role:'admin'}})
-    if(!user)
-        return res.status(400).send({success:false,message_en:`Can't update user beCause it's not found`})
-        console.log(user)
-    res.status(200).send({success:true,message_en:'user Role Change To Admin Successfully'})
+export const changeRole = async (req: AuthenticatedRequest, res: Response) => {
+    const id = req.params.id;
+    const user = await User.updateOne({ _id: id }, { $set: { role: 'admin' } })
+    if (!user)
+        return res.status(400).send({ success: false, message_en: `Can't update user beCause it's not found` })
+    console.log(user)
+    res.status(200).send({ success: true, message_en: 'user Role Change To Admin Successfully' })
 }
